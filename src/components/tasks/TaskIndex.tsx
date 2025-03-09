@@ -3,29 +3,37 @@ import { IUser } from "../../interfaces/UserInterface";
 import { AuthService } from "../../services/auth/AuthService";
 import { Star, Pencil, Trash, PaintBucket, Sparkles, NotebookPen } from "lucide-react";
 import TaskCreate from "./TaskCreate";
+import TaskService from "../../services/TaskService";
+import { ITask } from "../../interfaces/TaskInterface";
 
-const colors = ["bg-white", "bg-blue-200", "bg-yellow-200", "bg-green-200", "bg-red-200", "bg-purple-200"];
+// const colors = ["bg-white", "bg-blue-200", "bg-yellow-200", "bg-green-200", "bg-red-200", "bg-purple-200"];
 
 const TaskIndex = () => {
+    const colors = TaskService.getColors();
     const [user, setUser] = useState<IUser | null>(null);
-    const [showColorPicker, setShowColorPicker] = useState<string | null>(null);
-    const [tasks, setTasks] = useState([
-        { id: "1", title: "Título", description: "Clique para editar...", color: "bg-white", isFavorite: false },
-        { id: "2", title: "Título", description: "Clique para editar...", color: "bg-blue-200", isFavorite: true },
-        { id: "3", title: "Título", description: "Clique para editar...", color: "bg-yellow-200", isFavorite: false },
-        { id: "4", title: "Título", description: "Clique para editar...", color: "bg-green-200", isFavorite: true },
-        { id: "5", title: "Título", description: "Clique para editar...", color: "bg-green-200", isFavorite: true },
-    ]);
+    const [showColorPicker, setShowColorPicker] = useState<ITask | null>(null);
+    const [tasks, setTasks] = useState<ITask[]>([]);
 
-    const favoriteTasks = tasks.filter((task) => task.isFavorite);
-    const otherTasks = tasks.filter((task) => !task.isFavorite);
+    const favoriteTasks = tasks.filter((task) => task.favorite);
+    const otherTasks = tasks.filter((task) => !task.favorite);
+
+    const fetchTasks = async () => {
+        try {
+            const response = await TaskService.index();
+            setTasks(response);
+        } catch (error) {
+            console.error("Erro ao buscar tarefas:", error);
+        }
+    };
 
     useEffect(() => {
         setUser(AuthService.getUserFromToken());
+        fetchTasks();
     }, []);
 
+
     // Função para alternar cor de fundo
-    const changeColor = (id: string, newColor: string) => {
+    const changeColor = (id: number, newColor: string) => {
         setTasks((prevTasks) =>
             prevTasks.map((task) =>
                 task.id === id ? { ...task, color: newColor } : task
@@ -35,10 +43,10 @@ const TaskIndex = () => {
     };
 
     // Função para favoritar/desfavoritar
-    const toggleFavorite = (id: string) => {
+    const toggleFavorite = (id: number) => {
         setTasks((prevTasks) =>
             prevTasks.map((task) =>
-                task.id === id ? { ...task, isFavorite: !task.isFavorite } : task
+                task.id === id ? { ...task, isFavorite: !task.favorite } : task
             )
         );
     };
@@ -63,7 +71,7 @@ const TaskIndex = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
 
                     {tasks
-                        .filter((task) => task.isFavorite)
+                        .filter((task) => task.favorite)
                         .map((task) => (
                             <div key={task.id} className={`p-4 rounded-xl shadow-md ${task.color} relative`}>
                                 {/* Header */}
@@ -74,7 +82,7 @@ const TaskIndex = () => {
                                         value={task.title}
                                         readOnly
                                     />
-                                    <button onClick={() => toggleFavorite(task.id)}>
+                                    <button onClick={() => toggleFavorite(task.id as number)}>
                                         <Star size={20} className="text-yellow-500 fill-yellow-500 transition-colors" />
                                     </button>
                                 </div>
@@ -88,7 +96,7 @@ const TaskIndex = () => {
                                         <button className="text-gray-500 hover:text-gray-700">
                                             <Pencil size={16} />
                                         </button>
-                                        <button onClick={() => setShowColorPicker(task.id)} className="text-gray-500 hover:text-blue-500 relative">
+                                        <button onClick={() => setShowColorPicker(task)} className="text-gray-500 hover:text-blue-500 relative">
                                             <PaintBucket size={16} />
                                         </button>
                                     </div>
@@ -96,6 +104,14 @@ const TaskIndex = () => {
                                         <Trash size={16} />
                                     </button>
                                 </div>
+                                {/* Seletor de Cores */}
+                                {showColorPicker === task && (
+                                    <div className="absolute z-10 bottom-12 left-2 bg-white shadow-lg rounded-lg p-2 flex gap-2">
+                                        {colors.map((color) => (
+                                            <button key={color} className={`w-6 h-6 rounded-full ${color}`} onClick={() => changeColor(task.id as number, color)} />
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         ))}
 
@@ -117,7 +133,7 @@ const TaskIndex = () => {
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
                     {tasks
-                        .filter((task) => !task.isFavorite)
+                        .filter((task) => !task.favorite)
                         .map((task) => (
                             <div key={task.id} className={`p-4 rounded-xl shadow-md ${task.color} relative`}>
                                 {/* Header */}
@@ -128,7 +144,7 @@ const TaskIndex = () => {
                                         value={task.title}
                                         readOnly
                                     />
-                                    <button onClick={() => toggleFavorite(task.id)}>
+                                    <button onClick={() => toggleFavorite(task.id as number)}>
                                         <Star size={20} className="text-gray-400 hover:text-yellow-500 transition-colors" />
                                     </button>
                                 </div>
@@ -142,7 +158,7 @@ const TaskIndex = () => {
                                         <button className="text-gray-500 hover:text-gray-700">
                                             <Pencil size={16} />
                                         </button>
-                                        <button onClick={() => setShowColorPicker(task.id)} className="text-gray-500 hover:text-blue-500 relative">
+                                        <button onClick={() => setShowColorPicker(task)} className="text-gray-500 hover:text-blue-500 relative">
                                             <PaintBucket size={16} />
                                         </button>
                                     </div>
@@ -151,10 +167,10 @@ const TaskIndex = () => {
                                     </button>
                                 </div>
                                 {/* Seletor de Cores */}
-                                {showColorPicker === task.id && (
-                                    <div className="absolute bottom-12 left-2 bg-white shadow-lg rounded-lg p-2 flex gap-2">
+                                {showColorPicker === task && (
+                                    <div className="absolute z-10 bottom-12 left-2 bg-white shadow-lg rounded-lg p-2 flex gap-2">
                                         {colors.map((color) => (
-                                            <button key={color} className={`w-6 h-6 rounded-full ${color}`} onClick={() => changeColor(task.id, color)} />
+                                            <button key={color} className={`w-6 h-6 rounded-full ${color}`} onClick={() => changeColor(task.id as number, color)} />
                                         ))}
                                     </div>
                                 )}

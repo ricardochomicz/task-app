@@ -8,8 +8,10 @@ const AppRoutes: React.FC = () => {
     return (
         <Routes>
             <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/app/tasks" element={<TaskIndex />} />
+
         </Routes>
     );
 };

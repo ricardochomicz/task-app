@@ -27,6 +27,22 @@ interface AuthResponse {
 }
 
 export const AuthService = {
+    async register(data: UserData): Promise<AuthResponse> {
+        try {
+            const response = await api.post("/register", data);
+            console.log(response)
+            const { token } = response.data;
+
+            if (token) {
+                this.setToken(token);
+            }
+
+            return response.data;
+        } catch (error: any) {
+            throw error.response?.data || { error: "Erro ao fazer cadastro" };
+        }
+    },
+
     async login(credentials: Credentials): Promise<AuthResponse> {
         try {
             const response = await api.post("/login", credentials);

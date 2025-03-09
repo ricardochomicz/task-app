@@ -51,7 +51,7 @@ const Login: React.FC = () => {
     return (
         <div className='relative w-full h-screen '>
             <img src="notas.png" alt="" className="absolute inset-0 w-full h-full object-cover " />
-            <section className="absolute inset-0  flex items-center justify-center">
+            <section className="absolute inset-0 flex items-center justify-center">
                 <div className="flex flex-col items-center 
                 justify-center px-6 py-4 mx-auto 
                 md:h-screen lg:py-0">
