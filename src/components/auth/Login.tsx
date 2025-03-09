@@ -1,6 +1,10 @@
 import React from 'react';
+import { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginValidation } from '../../validations/auth/LoginValidation';
+import { AuthService } from '../../services/auth/AuthService';
 
 interface ILoginForm {
     email: string;
@@ -9,15 +13,40 @@ interface ILoginForm {
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
+    const [loading, setLoading] = React.useState(false);
+
 
     const {
         register,
         handleSubmit,
+        setError,
         formState: { errors, isSubmitting }
-    } = useForm<ILoginForm>({});
+    } = useForm<ILoginForm>({ resolver: zodResolver(loginValidation) });
 
-    const onSubmit: SubmitHandler<ILoginForm> = async (data, e) => {
-        e?.preventDefault();
+    const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
+        setLoading(true);
+        try {
+            const res = await AuthService.login({
+                email: data.email,
+                password: data.password,
+            });
+
+            if (res) {
+                console.log("Login", res)
+
+            } else {
+
+            }
+
+            navigate('/app/tasks');
+        } catch (error: any) {
+            setError("email", { message: "Credenciais inválidas" });
+            setError("password", { message: "Verifique sua senha" });
+            console.log(error)
+            // ToastService.error(error.response?.data.error || '1Credenciais inválidas.');
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -30,7 +59,6 @@ const Login: React.FC = () => {
                 md:h-screen lg:py-0">
                     <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                            <p className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Tasks</p>
                             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                                 Faça seu login
                             </h1>
@@ -44,7 +72,7 @@ const Login: React.FC = () => {
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         placeholder="seuemail@example.com"
                                     />
-                                    {/* {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>} */}
+                                    {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
                                 </div>
 
                                 <div>
@@ -56,7 +84,7 @@ const Login: React.FC = () => {
                                         placeholder="••••••••"
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     />
-                                    {/* {errors.password && <p className="text-red-500 text-sm">{errors.password_hash.message}</p>} */}
+                                    {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
                                 </div>
 
                                 <button
