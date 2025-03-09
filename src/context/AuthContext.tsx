@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-
+import { jwtDecode } from 'jwt-decode';
 
 // Definindo o tipo do usuário
 interface User {
@@ -18,6 +18,10 @@ interface AuthContextType {
     authenticated: boolean;
 }
 
+interface DecodedToken {
+    exp: number
+}
+
 // Criando o contexto com valor inicial
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -28,27 +32,37 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
     const [authenticated, setIsAuthenticated] = useState<boolean>(false);
 
+    const isTokenExpired = (token: string): boolean => {
+        try {
+            const decoded: DecodedToken = jwtDecode(token);
+            return decoded.exp * 1000 < Date.now(); // Converte expiração para milissegundos e compara
+        } catch (error) {
+            return true; // Se houver erro ao decodificar, considera expirado
+        }
+    };
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
-        if (storedToken) {
+        if (storedToken && !isTokenExpired(storedToken)) {
             setIsAuthenticated(true);
+        } else {
+            logout(); // Faz logout se o token estiver expirado
         }
     }, []);
 
     const login = (userData: User) => {
-
-        setIsAuthenticated(true);
-        localStorage.setItem('user', JSON.stringify(userData)); // Armazenando o usuário no localStorage
+        if (userData.token) {
+            localStorage.setItem('token', userData.token);
+            setIsAuthenticated(true);
+        }
     };
 
     const registro = (userData: User) => {
-
-        setIsAuthenticated(true);
-        localStorage.setItem('token', userData.token || '');  // Armazenando o usuário no localStorage
+        if (userData.token) {
+            localStorage.setItem('token', userData.token);
+            setIsAuthenticated(true);
+        }
     };
-
-
 
     const logout = () => {
 

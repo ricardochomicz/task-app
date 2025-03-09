@@ -92,4 +92,19 @@ export const AuthService = {
             return null;
         }
     },
+
+    removeToken(): void {
+        localStorage.removeItem("token");
+        delete axios.defaults.headers.common['Authorization'];
+    },
+
+    async logout(): Promise<void> {
+        try {
+            await api.post('/app/logout');  // Faz a requisição de logout
+            this.removeToken();
+        } catch (error) {
+            console.error('Erro ao realizar logout:', error);
+        }
+
+    },
 }
