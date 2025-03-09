@@ -40,8 +40,7 @@ const Login: React.FC = () => {
 
             navigate('/app/tasks');
         } catch (error: any) {
-            setError("email", { message: "Credenciais inválidas" });
-            setError("password", { message: "Verifique sua senha" });
+
             console.log(error)
             // ToastService.error(error.response?.data.error || '1Credenciais inválidas.');
         } finally {
@@ -52,7 +51,6 @@ const Login: React.FC = () => {
     return (
         <div className='relative w-full h-screen '>
             <img src="notas.png" alt="" className="absolute inset-0 w-full h-full object-cover " />
-            {/* <div className="absolute inset-0 bg-black bg-opacity-50 "></div> */}
             <section className="absolute inset-0  flex items-center justify-center">
                 <div className="flex flex-col items-center 
                 justify-center px-6 py-4 mx-auto 

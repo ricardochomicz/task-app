@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, LogOut, User } from "lucide-react";
 import { Menu as Dropdown, Transition } from "@headlessui/react";
 import { Fragment } from "react";
+import { useAuth } from '../../context/AuthContext';
 
 const NavBar = () => {
 
@@ -10,15 +11,16 @@ const NavBar = () => {
 
     const [loading, setLoading] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const { authenticated, logout } = useAuth();
 
 
 
     const handleLogout = () => {
-        // logout();
+        logout();
         navigate("/login");
     };
 
-    // if (!authenticated) return null;
+    if (!authenticated) return null;
 
     return (
         <nav className="bg-white border-b border-gray-300 dark:bg-gray-900 w-full">
