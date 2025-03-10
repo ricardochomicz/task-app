@@ -84,6 +84,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const logout = () => {
         setIsAuthenticated(false);
         localStorage.removeItem('token');
+        navigate('/login');
     };
 
     const refreshUser = async () => {

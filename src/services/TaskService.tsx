@@ -6,9 +6,13 @@ const TaskService = {
     create(data: ITask) {
         return api.post<ITask>("/tasks", data);
     },
-    async index(): Promise<ITask[]> {
+    async index(search: string = ""): Promise<ITask[]> {
         try {
-            const response = await api.get("/tasks");
+            const response = await api.get("/tasks", {
+                params: {
+                    search: search
+                }
+            });
             return response.data.data;
         } catch (error) {
             throw { error: "Erro ao exibir tarefas" };

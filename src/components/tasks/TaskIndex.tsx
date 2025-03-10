@@ -5,15 +5,25 @@ import TaskService from "../../services/TaskService";
 import { ITask } from "../../interfaces/TaskInterface";
 import TaskFavorites from "./TaskFavorites";
 import TaskOthers from "./TaskOthers";
+import TaskSearch from "./TaskSearch";
 
 const TaskIndex = () => {
     const colors = TaskService.getColors();
     const [showColorPicker, setShowColorPicker] = useState<ITask | null>(null);
     const [tasks, setTasks] = useState<ITask[]>([]);
     const [editingTask, setEditingTask] = useState<ITask | null>(null);
+    const [search, setSearch] = useState("");
 
     const favoriteTasks = tasks.filter((task) => task.favorite);
     const otherTasks = tasks.filter((task) => !task.favorite);
+
+    const filteredFavoriteTasks = favoriteTasks.filter(task =>
+        task.title.toLowerCase().includes(search.toLowerCase())
+    );
+
+    const filteredOtherTasks = otherTasks.filter(task =>
+        task.title.toLowerCase().includes(search.toLowerCase())
+    );
 
     const startEditing = (task: ITask) => {
         setEditingTask({
@@ -23,9 +33,9 @@ const TaskIndex = () => {
     };
 
 
-    const fetchTasks = async () => {
+    const fetchTasks = async (search = "") => {
         try {
-            const response = await TaskService.index();
+            const response = await TaskService.index(search);
             setTasks(response);
         } catch (error) {
             console.error("Erro ao buscar tarefas:", error);
@@ -33,8 +43,8 @@ const TaskIndex = () => {
     };
 
     useEffect(() => {
-        fetchTasks();
-    }, []);
+        fetchTasks(search);
+    }, [search]);
 
     const saveEdit = async () => {
         if (!editingTask) return;
@@ -81,8 +91,11 @@ const TaskIndex = () => {
 
     return (
         <div>
+
             <div className="p-4">
                 <TaskCreate onTaskCreated={fetchTasks} />
+
+                <TaskSearch search={search} setSearch={setSearch} />
 
                 <TaskFavorites
                     tasks={favoriteTasks}
