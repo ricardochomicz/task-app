@@ -15,6 +15,18 @@ const TaskService = {
         }
     },
 
+    async isFavorite(favorite: boolean, id: number) {
+        await api.put(`/tasks/${id}/favorite`, { favorite });
+    },
+
+    async updateColor(color: string, id: number) {
+        await api.put(`/tasks/${id}/color`, { color });
+    },
+
+    async destroy(id: number) {
+        await api.delete(`/tasks/${id}`);
+    },
+
     getColors() {
         return [
             "bg-white",

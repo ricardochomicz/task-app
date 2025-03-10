@@ -1,22 +1,21 @@
-import { useState } from "react";
+
 import { Star } from "lucide-react";
-import { SubmitHandler, FieldErrors, UseFormRegister } from "react-hook-form";
+import { SubmitHandler, UseFormRegister } from "react-hook-form";
 
 interface TaskFormProps {
     handleSubmit: SubmitHandler<any>;
     register: UseFormRegister<any>;
     errors: any;
     favorite: boolean
+    setFavorite: (value: boolean) => void;
 }
 
-function TaskForm({ handleSubmit, register, errors, favorite }: TaskFormProps) {
-    const [isFavorite, setIsFavorite] = useState(false);
+function TaskForm({ handleSubmit, register, errors, favorite, setFavorite }: TaskFormProps) {
+
     return (
         <div>
             <div className="flex justify-center items-center">
                 <form onSubmit={handleSubmit} className="w-96 bg-white shadow-md rounded-xl border p-4">
-
-
                     <div className="flex justify-between items-center border-b pb-2">
                         <input
                             type="text"
@@ -25,7 +24,7 @@ function TaskForm({ handleSubmit, register, errors, favorite }: TaskFormProps) {
                             {...register('title')}
                         />
                         {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
-                        <button type="button" onClick={() => setIsFavorite(!favorite)}>
+                        <button type="button" onClick={() => setFavorite(!favorite)}>
                             <Star
                                 size={20}
                                 className={`${favorite ? "text-yellow-500 fill-yellow-500" : "text-gray-400"
@@ -41,6 +40,7 @@ function TaskForm({ handleSubmit, register, errors, favorite }: TaskFormProps) {
                         {...register('description')}
                         rows={2}
                     />
+                    {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
                     {/* Botão de Criar */}
 
                     <div className="flex justify-end">

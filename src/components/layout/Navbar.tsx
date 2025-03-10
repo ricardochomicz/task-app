@@ -8,38 +8,44 @@ import { IUser } from '../../interfaces/UserInterface';
 import { AuthService } from '../../services/auth/AuthService';
 import Profile from '../users/Profile';
 
-const NavBar = () => {
 
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+const NavBar = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
     const [user, setUser] = useState<IUser | null>(null);
     const [loading, setLoading] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
-    const { authenticated, logout } = useAuth();
+    const { authenticated, logout, refreshUser } = useAuth();
 
-    const toggleDrawer = () => {
-        setIsDrawerOpen(!isDrawerOpen);
-    };
-
-    const closeDrawer = () => {
-        setIsDrawerOpen(false);
-    };
+    const toggleModal = () => setIsModalOpen(!isModalOpen);
+    const closeModal = () => setIsModalOpen(false);
 
     const handleLogout = () => {
         logout();
         navigate("/login");
     };
 
+    const handleProfile = () => {
+        return setUser(AuthService.getUserFromToken());
+    }
+
     useEffect(() => {
-        setUser(AuthService.getUserFromToken());
-    }, []);
+        if (authenticated) {
+            setUser(AuthService.getUserFromToken());
+        } else {
+            setUser(null);
+        }
+    }, [authenticated]);
+
+    if (loading) {
+        return <div>Carregando...</div>; // Ou qualquer outro indicador de carregamento
+    }
 
     if (!authenticated) return null;
 
     return (
         <div>
             <nav className="bg-white  dark:bg-gray-900 w-full">
-
                 <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
                     <Link to="/" className="flex items-center space-x-3">
                         <img src="../../../planning.png" className="h-8" alt="Logo" />
@@ -54,7 +60,6 @@ const NavBar = () => {
                     </button>
 
                     {/* AVATAR E DROPDOWN */}
-
                     <div className="relative hidden lg:flex items-center space-x-4">
                         <small className='text-white p-2'>Olá, {user?.name}</small>
                         <Dropdown as="div" className="relative">
@@ -65,7 +70,6 @@ const NavBar = () => {
                                     className="h-10 w-10 rounded-full  "
                                 />
                             </Dropdown.Button>
-
                             <Transition
                                 as={Fragment}
                                 enter="transition ease-out duration-200"
@@ -81,7 +85,7 @@ const NavBar = () => {
                                         {({ active }) => (
                                             <Link
                                                 to="#"
-                                                onClick={toggleDrawer} // Abre o drawer quando clicado
+                                                onClick={toggleModal} // Abre o drawer quando clicado
                                                 className={`flex items-center px-4 py-2 text-gray-700 dark:text-white ${active ? "bg-gray-100 dark:bg-gray-700" : ""}`}
                                             >
                                                 <User size={18} className="mr-2" />
@@ -89,7 +93,6 @@ const NavBar = () => {
                                             </Link>
                                         )}
                                     </Dropdown.Item>
-
                                     <Dropdown.Item>
                                         {({ active }) => (
                                             <button
@@ -106,9 +109,8 @@ const NavBar = () => {
                         </Dropdown>
                     </div>
                 </div>
-
             </nav>
-            {isDrawerOpen && <Profile isOpen={isDrawerOpen} onClose={closeDrawer} user={user} toggleDrawer={toggleDrawer} />}
+            {isModalOpen && <Profile isOpen={isModalOpen} onClose={closeModal} user={user} />}
         </div>
     );
 };

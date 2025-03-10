@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import api from '../Api';
+
 
 // Definindo o tipo do usuário
 interface User {
@@ -16,6 +18,7 @@ interface AuthContextType {
     login: (userData: User) => void;
     logout: () => void;
     authenticated: boolean;
+    refreshUser: () => void;
 }
 
 interface DecodedToken {
@@ -30,7 +33,8 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-    const [authenticated, setIsAuthenticated] = useState<boolean>(false);
+
+    const [user, setUser] = useState<User | null>(null);
 
     const isTokenExpired = (token: string): boolean => {
         try {
@@ -41,19 +45,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
     };
 
+    const [authenticated, setIsAuthenticated] = useState<boolean>(true)
+
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         if (storedToken && !isTokenExpired(storedToken)) {
             setIsAuthenticated(true);
+            refreshUser();
         } else {
-            logout(); // Faz logout se o token estiver expirado
+            handleSessionExpired();
         }
-    }, []);
+    }, [authenticated]);
+
+    const handleSessionExpired = () => {
+        logout();
+        // window.location.href = "/login"; // 👈 Redireciona para login
+    };
 
     const login = (userData: User) => {
         if (userData.token) {
             localStorage.setItem('token', userData.token);
             setIsAuthenticated(true);
+            window.location.href = "/tasks";
         }
     };
 
@@ -61,19 +74,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (userData.token) {
             localStorage.setItem('token', userData.token);
             setIsAuthenticated(true);
+            setUser(userData)
         }
     };
 
     const logout = () => {
-
         setIsAuthenticated(false);
         localStorage.removeItem('token');
     };
 
-
+    const refreshUser = async () => {
+        try {
+            const response = await api.get("/me"); // Endpoint para obter o usuário autenticado
+            console.log("Usuário atualizado:", response.data);
+            setUser(response.data);
+        } catch (error) {
+            console.error("Erro ao buscar usuário atualizado:", error);
+        }
+    };
 
     return (
-        <AuthContext.Provider value={{ registro, login, logout, authenticated }}>
+        <AuthContext.Provider value={{ authenticated, registro, login, logout, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );

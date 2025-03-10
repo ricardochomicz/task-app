@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, InternalAxiosRequestConfig, AxiosError } from 'axios';
 import { AuthService } from './services/auth/AuthService';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 
 // Criação da instância do axios
 const api = axios.create({
@@ -24,27 +24,14 @@ api.interceptors.request.use(
 );
 
 // // Intercepta as respostas para verificar erros globais (como token expirado)
-// api.interceptors.response.use(
-//     (response) => {
-//         return response; // Retorna a resposta da API
-//     },
-//     (error: AxiosError) => {
-//         console.error("Erro da API:", error);
-
-//         // Verifica se há resposta da API
-//         if (error.response) {
-
-//             // Se o status da resposta for 401 (não autorizado), trata o token expirado
-//             if (error.response.status === 401 || error.response.data?.details === "jwt expired") {
-//                 window.location.href = "/login";
-//                 AuthService.removeToken(); // Remove o token inválido
-//             }
-//         } else {
-//             // Caso não haja resposta do servidor
-//             console.error("Erro sem resposta do servidor:", error);
-//         }
-//         return Promise.reject(error); // Retorna o erro caso contrário
-//     }
-// );
-
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            const { logout } = useAuth();
+            logout(); // Token inválido? Faz logout e redireciona
+        }
+        return Promise.reject(error);
+    }
+);
 export default api;

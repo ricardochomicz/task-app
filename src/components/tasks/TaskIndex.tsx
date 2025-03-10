@@ -5,12 +5,10 @@ import { Star, Pencil, Trash, PaintBucket, Sparkles, NotebookPen } from "lucide-
 import TaskCreate from "./TaskCreate";
 import TaskService from "../../services/TaskService";
 import { ITask } from "../../interfaces/TaskInterface";
-
-// const colors = ["bg-white", "bg-blue-200", "bg-yellow-200", "bg-green-200", "bg-red-200", "bg-purple-200"];
+import { ToastService } from "../../commons/ToastMessages";
 
 const TaskIndex = () => {
     const colors = TaskService.getColors();
-    const [user, setUser] = useState<IUser | null>(null);
     const [showColorPicker, setShowColorPicker] = useState<ITask | null>(null);
     const [tasks, setTasks] = useState<ITask[]>([]);
 
@@ -27,33 +25,59 @@ const TaskIndex = () => {
     };
 
     useEffect(() => {
-        setUser(AuthService.getUserFromToken());
         fetchTasks();
     }, []);
 
 
     // Função para alternar cor de fundo
-    const changeColor = (id: number, newColor: string) => {
+    const changeColor = async (id: number, newColor: string) => {
         setTasks((prevTasks) =>
             prevTasks.map((task) =>
                 task.id === id ? { ...task, color: newColor } : task
             )
         );
         setShowColorPicker(null); // Fecha o seletor após a escolha
+        const task = tasks.find((t) => t.id === id);
+        if (task) {
+            const res = await TaskService.updateColor(newColor, id);
+        } else {
+            console.error("Erro: Tarefa não encontrada.");
+        }
     };
 
     // Função para favoritar/desfavoritar
-    const toggleFavorite = (id: number) => {
+    const toggleFavorite = async (id: number) => {
         setTasks((prevTasks) =>
             prevTasks.map((task) =>
-                task.id === id ? { ...task, isFavorite: !task.favorite } : task
+                task.id === id ? { ...task, favorite: !task.favorite } : task
             )
         );
+        const task = tasks.find((t) => t.id === id);
+
+        if (task) {
+            const newFavoriteStatus = !task.favorite;
+            console.log(newFavoriteStatus)
+            const res = await TaskService.isFavorite(!!newFavoriteStatus, id);
+            if (newFavoriteStatus) {
+                ToastService.success("Tarefa marcada como favorita!");
+            } else {
+                ToastService.success("Tarefa desmarcada como favorita!");
+            }
+
+        } else {
+            console.error("Erro: Tarefa não encontrada ou estado inválido.");
+        }
+    };
+
+    const deleteTask = async (id: number) => {
+        await TaskService.destroy(id);
+        ToastService.success("Tarefa excluídacom sucesso!");
+        fetchTasks();
     };
 
     return (
         <div className="p-4">
-            <TaskCreate />
+            <TaskCreate onTaskCreated={fetchTasks} />
 
             {/* Favoritos */}
             <div className="flex items-center gap-2 mb-4">
@@ -75,6 +99,7 @@ const TaskIndex = () => {
                         .map((task) => (
                             <div key={task.id} className={`p-4 rounded-xl shadow-md ${task.color} relative`}>
                                 {/* Header */}
+                                <small>{task.created_at}</small>
                                 <div className="flex justify-between items-center border-b pb-2">
                                     <input
                                         type="text"
@@ -100,7 +125,7 @@ const TaskIndex = () => {
                                             <PaintBucket size={16} />
                                         </button>
                                     </div>
-                                    <button className="text-gray-500 hover:text-red-500">
+                                    <button onClick={() => deleteTask(task.id as number)} className="text-gray-500 hover:text-red-500">
                                         <Trash size={16} />
                                     </button>
                                 </div>
@@ -137,7 +162,9 @@ const TaskIndex = () => {
                         .map((task) => (
                             <div key={task.id} className={`p-4 rounded-xl shadow-md ${task.color} relative`}>
                                 {/* Header */}
+                                <small>{task.created_at}</small>
                                 <div className="flex justify-between items-center border-b pb-2">
+
                                     <input
                                         type="text"
                                         className="w-full text-lg font-semibold focus:outline-none bg-transparent"
@@ -162,10 +189,11 @@ const TaskIndex = () => {
                                             <PaintBucket size={16} />
                                         </button>
                                     </div>
-                                    <button className="text-gray-500 hover:text-red-500">
+                                    <button onClick={() => deleteTask(task.id as number)} className="text-gray-500 hover:text-red-500">
                                         <Trash size={16} />
                                     </button>
                                 </div>
+
                                 {/* Seletor de Cores */}
                                 {showColorPicker === task && (
                                     <div className="absolute z-10 bottom-12 left-2 bg-white shadow-lg rounded-lg p-2 flex gap-2">

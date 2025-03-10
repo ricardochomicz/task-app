@@ -27,6 +27,7 @@ interface AuthResponse {
 }
 
 export const AuthService = {
+
     async register(data: UserData): Promise<AuthResponse> {
         try {
             const response = await api.post("/register", data);
@@ -43,6 +44,15 @@ export const AuthService = {
         }
     },
 
+    setToken(token: string): void {
+        localStorage.setItem("token", token);
+        // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    },
+
+    getToken(): string | null {
+        return localStorage.getItem("token");
+    },
+
     async login(credentials: Credentials): Promise<AuthResponse> {
         try {
             const response = await api.post("/login", credentials);
@@ -51,21 +61,13 @@ export const AuthService = {
 
             if (token) {
                 this.setToken(token);
+                await this.getUser();
             }
 
             return response.data;
         } catch (error: any) {
             throw error.response?.data || { error: "Erro ao fazer login" };
         }
-    },
-
-    setToken(token: string): void {
-        localStorage.setItem("token", token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    },
-
-    getToken(): string | null {
-        return localStorage.getItem("token");
     },
 
     getUserFromToken(): IUser | null {
@@ -83,9 +85,8 @@ export const AuthService = {
     async getUser(): Promise<IUser | null> {
         const token = this.getToken();
         if (!token) return null;
-
         try {
-            const response = await api.get("/app/profile");
+            const response = await api.get("/me");
             return response.data;
         } catch (error) {
             console.error("Erro ao buscar usuário:", error);
@@ -100,7 +101,7 @@ export const AuthService = {
 
     async logout(): Promise<void> {
         try {
-            await api.post('/app/logout');  // Faz a requisição de logout
+            await api.post('/logout');  // Faz a requisição de logout
             this.removeToken();
         } catch (error) {
             console.error('Erro ao realizar logout:', error);
