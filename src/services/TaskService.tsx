@@ -44,6 +44,16 @@ const TaskService = {
         }
     },
 
+    async update(id: number, data: ITask) {
+        try {
+            const res = await api.put(`/tasks/${id}`, data);
+            ToastService.success("Tarefa atualizada com sucesso!");
+            return res.data;
+        } catch (error) {
+            ToastService.error("Erro ao atualizar tarefa.");
+        }
+    },
+
     getColors() {
         return [
             "bg-white",
