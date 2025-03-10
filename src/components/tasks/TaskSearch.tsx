@@ -10,7 +10,7 @@ const TaskSearch: React.FC<TaskSearchProps> = ({ search, setSearch }) => {
         <div className="flex justify-center items-center">
             <div className="mt-5 w-full max-w-md">
                 <input
-                    type="text"
+                    type="search"
                     placeholder="Buscar tarefas..."
                     value={search}
                     name="search"
