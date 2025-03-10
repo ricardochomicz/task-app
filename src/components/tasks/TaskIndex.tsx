@@ -17,21 +17,12 @@ const TaskIndex = () => {
     const favoriteTasks = tasks.filter((task) => task.favorite);
     const otherTasks = tasks.filter((task) => !task.favorite);
 
-    const filteredFavoriteTasks = favoriteTasks.filter(task =>
-        task.title.toLowerCase().includes(search.toLowerCase())
-    );
-
-    const filteredOtherTasks = otherTasks.filter(task =>
-        task.title.toLowerCase().includes(search.toLowerCase())
-    );
-
     const startEditing = (task: ITask) => {
         setEditingTask({
             ...task,
             description: task.description || "" // Evita erro de undefined
         });
     };
-
 
     const fetchTasks = async (search = "") => {
         try {
@@ -57,7 +48,6 @@ const TaskIndex = () => {
         setEditingTask(null);
         fetchTasks();
     };
-
 
 
     // Função para alternar cor de fundo

@@ -68,7 +68,7 @@ const TaskFavorites: React.FC<TaskFavoritesProps> = ({
                                     />
                                 )}
                                 <button onClick={() => toggleFavorite(task.id as number)}>
-                                    <Star size={20} className="text-yellow-500 fill-yellow-500 transition-colors" />
+                                    <Star size={20} className="transition-colors text-yellow-500 fill-yellow-500 transition-colors" />
                                 </button>
                             </div>
 
@@ -108,7 +108,7 @@ const TaskFavorites: React.FC<TaskFavoritesProps> = ({
 
                             {/* Seletor de Cores */}
                             {showColorPicker === task && (
-                                <div className="absolute z-10 bottom-12 left-2 bg-white shadow-lg rounded-lg p-2 flex gap-2">
+                                <div className="absolute z-20 bottom-12 left-2 bg-white shadow-lg rounded-lg p-2 flex gap-2">
                                     {colors.map((color) => (
                                         <button key={color} className={`w-6 h-6 rounded-full ${color}`} onClick={() => changeColor(task.id as number, color)} />
                                     ))}
