@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { IUser } from "../../interfaces/UserInterface";
-import { AuthService } from "../../services/auth/AuthService";
 import { Star, Pencil, Trash, PaintBucket, Sparkles, NotebookPen } from "lucide-react";
 import TaskCreate from "./TaskCreate";
 import TaskService from "../../services/TaskService";
@@ -36,13 +34,8 @@ const TaskIndex = () => {
                 task.id === id ? { ...task, color: newColor } : task
             )
         );
-        setShowColorPicker(null); // Fecha o seletor após a escolha
-        const task = tasks.find((t) => t.id === id);
-        if (task) {
-            const res = await TaskService.updateColor(newColor, id);
-        } else {
-            console.error("Erro: Tarefa não encontrada.");
-        }
+        setShowColorPicker(null);
+        await TaskService.updateColor(id, newColor);
     };
 
     // Função para favoritar/desfavoritar
@@ -53,25 +46,13 @@ const TaskIndex = () => {
             )
         );
         const task = tasks.find((t) => t.id === id);
-
         if (task) {
-            const newFavoriteStatus = !task.favorite;
-            console.log(newFavoriteStatus)
-            const res = await TaskService.isFavorite(!!newFavoriteStatus, id);
-            if (newFavoriteStatus) {
-                ToastService.success("Tarefa marcada como favorita!");
-            } else {
-                ToastService.success("Tarefa desmarcada como favorita!");
-            }
-
-        } else {
-            console.error("Erro: Tarefa não encontrada ou estado inválido.");
+            await TaskService.isFavorite(id, !task.favorite);
         }
     };
 
     const deleteTask = async (id: number) => {
         await TaskService.destroy(id);
-        ToastService.success("Tarefa excluídacom sucesso!");
         fetchTasks();
     };
 

@@ -10,16 +10,15 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <ToastContainer />
         <NavBar />
         <div className="container mx-auto ">
           <AppRoutes />
         </div>
-      </Router>
-    </AuthProvider>
-
+      </AuthProvider>
+    </Router>
   );
 }
 

@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { loginValidation } from '../../validations/auth/LoginValidation';
 import { AuthService } from '../../services/auth/AuthService';
 import { ToastService } from '../../commons/ToastMessages';
+import { useAuth } from '../../context/AuthContext';;
 
 interface ILoginForm {
     email: string;
@@ -12,9 +13,8 @@ interface ILoginForm {
 }
 
 const Login: React.FC = () => {
+    const { setIsAuthenticated } = useAuth();
     const navigate = useNavigate();
-    const [loading, setLoading] = React.useState(false);
-
 
     const {
         register,
@@ -23,18 +23,14 @@ const Login: React.FC = () => {
     } = useForm<ILoginForm>({ resolver: zodResolver(loginValidation) });
 
     const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
-        setLoading(true);
         try {
             const res = await AuthService.login({
                 email: data.email,
                 password: data.password,
-            });
+            }, setIsAuthenticated);
             navigate('/app/tasks');
         } catch (error: any) {
-            console.log(error.error)
             ToastService.error(error.error);
-        } finally {
-            setLoading(false);
         }
     }
 

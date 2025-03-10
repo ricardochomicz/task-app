@@ -3,9 +3,6 @@ import { IUser } from "../../interfaces/UserInterface";
 import UserService from "../../services/UserService";
 import { useEffect, useState } from "react";
 import { ToastService } from "../../commons/ToastMessages";
-import { SubmitHandler } from "react-hook-form";
-import { useAuth } from "../../context/AuthContext";
-import { AuthService } from "../../services/auth/AuthService";
 
 interface ProfileProps {
     user: IUser | null;
@@ -19,8 +16,6 @@ interface IUserData {
 }
 
 const Profile: React.FC<ProfileProps> = ({ user, isOpen, onClose }) => {
-
-    const { authenticated, logout, refreshUser } = useAuth();
     const [formData, setFormData] = useState<IUserData>({
         name: user?.name || '',
         email: user?.email || '',
@@ -42,18 +37,15 @@ const Profile: React.FC<ProfileProps> = ({ user, isOpen, onClose }) => {
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!user?.id) {
-            console.error("Usuário inválido ou sem ID.");
+            ToastService.error("ID ou usuário inválido.");
             return;
         }
         try {
-            await UserService.update(formData, user.id);
-            refreshUser();
-            ToastService.success("Usuário atualizado com sucesso!");
+            let res = await UserService.update(formData, user.id);
+            ToastService.success(res.data.message);
             onClose();
-
         } catch (error: any) {
-            console.error("Erro ao atualizar usuário:", error.response?.data || error.message);
-            ToastService.error("Ops! Erro ao atualizar!");
+            ToastService.error(error.response.data.error);
         }
     };
 
@@ -107,7 +99,6 @@ const Profile: React.FC<ProfileProps> = ({ user, isOpen, onClose }) => {
                                     required
                                 />
                             </div>
-
                             <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 w-full focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                                 Editar Perfil
                             </button>

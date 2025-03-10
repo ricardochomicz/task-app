@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import api from '../Api';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { AuthService } from '../services/auth/AuthService';
 
 
 // Definindo o tipo do usuário
@@ -18,6 +20,7 @@ interface AuthContextType {
     login: (userData: User) => void;
     logout: () => void;
     authenticated: boolean;
+    setIsAuthenticated: (value: boolean) => void;
     refreshUser: () => void;
 }
 
@@ -35,6 +38,8 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
 
     const [user, setUser] = useState<User | null>(null);
+    const navigate = useNavigate();
+    const [authenticated, setIsAuthenticated] = useState<boolean>(true)
 
     const isTokenExpired = (token: string): boolean => {
         try {
@@ -44,8 +49,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
             return true; // Se houver erro ao decodificar, considera expirado
         }
     };
-
-    const [authenticated, setIsAuthenticated] = useState<boolean>(true)
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
@@ -59,14 +62,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const handleSessionExpired = () => {
         logout();
-        // window.location.href = "/login"; // 👈 Redireciona para login
+        navigate('/login'); // 👈 Redireciona para login
     };
 
-    const login = (userData: User) => {
-        if (userData.token) {
-            localStorage.setItem('token', userData.token);
-            setIsAuthenticated(true);
-            window.location.href = "/tasks";
+    const login = async (userData: any) => {
+        try {
+            await AuthService.login(userData, setIsAuthenticated);  // Passando a função setIsAuthenticated para o AuthService
+        } catch (error) {
+            throw { error: "Erro ao fazer login" };
         }
     };
 
@@ -85,16 +88,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const refreshUser = async () => {
         try {
-            const response = await api.get("/me"); // Endpoint para obter o usuário autenticado
-            console.log("Usuário atualizado:", response.data);
+            const response = await api.get("/me");
             setUser(response.data);
         } catch (error) {
-            console.error("Erro ao buscar usuário atualizado:", error);
+            throw { error: "Erro ao buscar usuário" };
         }
     };
 
     return (
-        <AuthContext.Provider value={{ authenticated, registro, login, logout, refreshUser }}>
+        <AuthContext.Provider value={{ authenticated, setIsAuthenticated, registro, login, logout, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );

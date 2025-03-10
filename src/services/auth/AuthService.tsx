@@ -3,7 +3,6 @@ import api from '../../Api';
 import { IUser } from '../../interfaces/UserInterface';
 import { jwtDecode } from "jwt-decode";
 
-
 const API_URL = 'http://localhost:8080/api';
 
 interface UserData {
@@ -40,33 +39,33 @@ export const AuthService = {
 
             return response.data;
         } catch (error: any) {
-            throw error.response?.data || { error: "Erro ao fazer cadastro" };
+            throw { error: "Erro ao fazer cadastro" };
         }
     },
 
     setToken(token: string): void {
         localStorage.setItem("token", token);
-        // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     },
 
     getToken(): string | null {
         return localStorage.getItem("token");
     },
 
-    async login(credentials: Credentials): Promise<AuthResponse> {
+    async login(credentials: Credentials, setAuthenticated: (value: boolean) => void): Promise<AuthResponse> {
         try {
             const response = await api.post("/login", credentials);
             console.log(response)
             const { token } = response.data;
-
             if (token) {
                 this.setToken(token);
                 await this.getUser();
+                setAuthenticated(true);
             }
-
             return response.data;
         } catch (error: any) {
-            throw error.response?.data || { error: "Erro ao fazer login" };
+            console.log(error)
+            throw { error: "Erro ao fazer login, verifique suas credenciais" };
         }
     },
 
@@ -77,7 +76,7 @@ export const AuthService = {
         try {
             return jwtDecode<IUser>(token); // Retorna { id, name, email }
         } catch (error) {
-            console.error("Erro ao decodificar token:", error);
+            throw { error: "Erro ao decodificar token" };
             return null;
         }
     },
@@ -89,7 +88,7 @@ export const AuthService = {
             const response = await api.get("/me");
             return response.data;
         } catch (error) {
-            console.error("Erro ao buscar usuário:", error);
+            throw { error: "Erro ao buscar usuário." };
             return null;
         }
     },
@@ -104,7 +103,7 @@ export const AuthService = {
             await api.post('/logout');  // Faz a requisição de logout
             this.removeToken();
         } catch (error) {
-            console.error('Erro ao realizar logout:', error);
+            throw { error: "Erro ao fazer logout" };
         }
 
     },
