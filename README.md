@@ -8,7 +8,7 @@ O Task App é uma aplicação web para gerenciamento de tarefas, onde os usuári
 
 1. Clone o repositório:
     ```sh
-    git clone https://github.com/seu-usuario/task-app.git
+    git clone https://github.com/ricardochomicz/task-app.git
     cd task-app
     ```
 
@@ -26,21 +26,10 @@ No diretório do projeto, você pode executar:
 Roda a aplicação em modo de desenvolvimento.\
 Abra [http://localhost:3000](http://localhost:3000) para visualizá-la no navegador.
 
-### `npm test`
+### `npx jest`
 
 Inicia o executor de testes no modo interativo.\
 Veja a seção sobre [testes em execução](https://facebook.github.io/create-react-app/docs/running-tests) para mais informações.
-
-### `npm run build`
-
-Compila a aplicação para produção na pasta `build`.\
-Ele agrupa corretamente o React no modo de produção e otimiza a construção para o melhor desempenho.
-
-### `npm run eject`
-
-**Nota: esta é uma operação unilateral. Uma vez que você `eject`, você não pode voltar!**
-
-Se você não estiver satisfeito com a ferramenta de construção e as escolhas de configuração, você pode `eject` a qualquer momento. Este comando removerá a dependência única de construção do seu projeto.
 
 ## Configuração do Docker
 
@@ -78,6 +67,7 @@ A estrutura do projeto é a seguinte:
 
 ## Vídeo Demonstrativo
 [Assistir](https://youtu.be/4P6oRjyOpao)
+
 
 ## Testes
 
