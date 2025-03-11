@@ -41,13 +41,10 @@ const Profile: React.FC<ProfileProps> = ({ user, isOpen, onClose }) => {
             return;
         }
         try {
-            let res = await UserService.update(formData, user.id);
-            ToastService.success(res.data.message);
+            await UserService.update(formData, user.id);
             onClose();
-            console.log('Perfil atualizado com sucesso!')
-        } catch (error: any) {
-            console.log('Erro ao atualizar perfil');
-            ToastService.error(error.response.data.error);
+        } catch (error) {
+            console.log('Erro ao atualizar perfil')
         }
     };
 

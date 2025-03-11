@@ -21,15 +21,9 @@ function TaskCreate({ onTaskCreated }: TaskCreateProps) {
     } = useForm<ITask>({ resolver: zodResolver(taskValidation) });
 
     const onSubmit: SubmitHandler<ITask> = async (data) => {
-        console.log(data)
-        try {
-            const response = await TaskService.create({ ...data, favorite });
-            onTaskCreated();
-            reset();
-            ToastService.success("Tarefa criada com sucesso!");
-        } catch (error) {
-
-        }
+        await TaskService.create({ ...data, favorite });
+        onTaskCreated();
+        reset();
     }
 
     return (

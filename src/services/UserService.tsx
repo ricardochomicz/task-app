@@ -1,4 +1,5 @@
 import api from "../Api";
+import { ToastService } from "../commons/ToastMessages";
 
 interface IUserData {
     name: string,
@@ -6,11 +7,14 @@ interface IUserData {
 }
 
 const UserService = {
-    update(data: IUserData, user: number) {
-        const token = localStorage.getItem('token');
-        return api.put(`/users/${user}`, data, {
-            headers: { Authorization: `Bearer ${token}` },
-        });
+
+    async update(data: IUserData, user: number) {
+        try {
+            let res = await api.put(`/users/${user}`, data);
+            ToastService.success(res.data.message);
+        } catch (error: any) {
+            ToastService.error(error.response.data.error);
+        }
     },
 }
 
