@@ -1,7 +1,9 @@
 
 ## Clonar repositórios
+```bash
 git clone https://github.com/ricardochomicz/task-api.git
 git clone https://github.com/ricardochomicz/task-app.git
+```
 
 # API
 ## Acessar pasta aplicação, criar .env e variáveis de ambiente
@@ -31,7 +33,7 @@ php artisan migrate
 ```bash
 docker build -t task-app .
 docker run -p 80:80 task-app
-```	
+```
 
 # APP
 ## Acessar pasta aplicação (local)
@@ -39,7 +41,7 @@ docker run -p 80:80 task-app
 cd task-app
 npm install --legacy-peer-deps
 npm start
-```
+``` 
 
 ## Construir a imagem e rodar o container
 ```bash

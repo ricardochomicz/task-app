@@ -13,7 +13,6 @@ interface TaskCreateProps {
 
 function TaskCreate({ onTaskCreated }: TaskCreateProps) {
     const [favorite, setIsFavorite] = useState(false);
-
     const {
         register,
         handleSubmit,
