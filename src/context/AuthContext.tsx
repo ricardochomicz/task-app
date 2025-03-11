@@ -15,6 +15,7 @@ interface User {
 interface AuthContextType {
     authenticated: boolean;
     setIsAuthenticated: (value: boolean) => void;
+    logout: () => void;
 }
 
 interface DecodedToken {
@@ -65,7 +66,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     };
 
     return (
-        <AuthContext.Provider value={{ authenticated, setIsAuthenticated }}>
+        <AuthContext.Provider value={{ authenticated, setIsAuthenticated, logout }}>
             {children}
         </AuthContext.Provider>
     );

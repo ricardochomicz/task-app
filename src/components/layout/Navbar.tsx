@@ -12,7 +12,7 @@ const NavBar = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState<IUser | null>(null);
     const [menuOpen, setMenuOpen] = useState(false);
-    const { authenticated } = useAuth();
+    const { authenticated, logout } = useAuth();
 
     useEffect(() => {
         if (authenticated) {
@@ -25,7 +25,7 @@ const NavBar = () => {
     if (!authenticated) return null;
 
     const handleLogout = () => {
-        AuthService.logout();
+        logout();
         navigate("/login");
     };
 
