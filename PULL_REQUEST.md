@@ -39,7 +39,7 @@ docker run -p 80:80 task-app
 cd task-app
 npm install --legacy-peer-deps
 npm start
-```
+``` 
 
 ## Construir a imagem e rodar o container
 ```bash
