@@ -9,7 +9,7 @@ COPY package.json ./
 COPY package-lock.json ./
 
 # Instale as dependências do projeto
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copie todos os arquivos do projeto para o diretório de trabalho
 COPY . .
