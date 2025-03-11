@@ -34,15 +34,18 @@ docker run -p 80:80 task-app
 ```	
 
 # APP
-## Acessar pasta aplicação
+## Acessar pasta aplicação (local)
 ```bash
 cd task-app
+npm install --legacy-peer-deps
+npm start
 ```
 
 ## Construir a imagem e rodar o container
 ```bash
+cd task-app
 docker build -t task-app .
-docker run -p 80:80 task-app
+docker run -p 3000:80 task-app
 ```
 
 ## Acessar aplicação
