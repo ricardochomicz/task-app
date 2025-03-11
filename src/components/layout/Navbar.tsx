@@ -22,13 +22,12 @@ const NavBar = () => {
         }
     }, [authenticated]);
 
-    if (!authenticated) return null;
-
     const handleLogout = () => {
         logout();
         navigate("/login");
     };
 
+    if (!authenticated) return null;
     return (
         <nav className="bg-white dark:bg-gray-900 w-full">
             <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
