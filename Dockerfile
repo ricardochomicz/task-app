@@ -9,7 +9,7 @@ COPY package.json ./
 COPY package-lock.json ./
 
 # Instale as dependências do projeto
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copie todos os arquivos do projeto para o diretório de trabalho
 COPY . .
@@ -25,6 +25,8 @@ FROM nginx:alpine
 
 # Copie os arquivos de build do React para o diretório padrão do Nginx
 COPY --from=0 /app/build /usr/share/nginx/html
+
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Exponha a porta 80 para acessar o aplicativo
 EXPOSE 80
