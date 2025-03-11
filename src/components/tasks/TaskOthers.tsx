@@ -50,7 +50,7 @@ const TaskOthers: React.FC<TaskOthersProps> = ({
                                 {editingTask?.id === task.id ? (
                                     <input
                                         type="text"
-                                        className="w-full text-lg font-semibold focus:outline-none bg-transparent rounded px-2"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                         value={editingTask?.title}
                                         onChange={(e) =>
                                             setEditingTask((prev) =>
@@ -75,7 +75,7 @@ const TaskOthers: React.FC<TaskOthersProps> = ({
                             {/* Descrição */}
                             {editingTask?.id === task.id ? (
                                 <textarea
-                                    className="w-full text-sm bg-transparent rounded px-2 min-h-[120px]"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 min-h-[120px]"
                                     value={editingTask?.description || ""}
                                     onChange={(e) =>
                                         setEditingTask((prev) =>
