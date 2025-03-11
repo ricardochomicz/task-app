@@ -46,14 +46,6 @@
       "react-app/jest"
     ]
   },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "jsdom",
-    "rootDir": "./",
-    "moduleNameMapper": {
-      "^src/(.*)$": "<rootDir>/src/$1"
-    }
-  },
   "browserslist": {
     "production": [
       ">0.2%",

@@ -12,6 +12,7 @@ const TaskSearchColor: React.FC<TaskSearchColorProps> = ({ colors, selectedColor
             {colors.map((color) => (
                 <button
                     key={color}
+                    data-testid={color}
                     onClick={() => onSelectColor(selectedColor === color ? null : color)}
                     className={`w-8 h-8 rounded-full border-2 ${color} ${selectedColor === color ? "border-blue-500 scale-110" : "border-transparent"
                         } transition-transform`}
