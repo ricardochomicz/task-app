@@ -45,7 +45,7 @@ const NavBar = () => {
 
     return (
         <div>
-            <nav className="bg-white  dark:bg-gray-900 w-full">
+            <nav className="bg-white dark:bg-gray-900 w-full">
                 <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
                     <Link to="/" className="flex items-center space-x-3">
                         <img src="../../../planning.png" className="h-8" alt="Logo" />

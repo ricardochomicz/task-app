@@ -6,6 +6,7 @@ import { ITask } from "../../interfaces/TaskInterface";
 import TaskFavorites from "./TaskFavorites";
 import TaskOthers from "./TaskOthers";
 import TaskSearch from "./TaskSearch";
+import TaskSearchColor from "./TaskSearchColor";
 
 const TaskIndex = () => {
     const colors = TaskService.getColors();
@@ -90,30 +91,16 @@ const TaskIndex = () => {
 
     return (
         <div>
-
             <div className="p-4">
                 <TaskCreate onTaskCreated={fetchTasks} />
 
                 <TaskSearch search={search} setSearch={setSearch} />
-                {/* Paleta de Cores */}
-                <div className="flex gap-2 justify-center items-center mt-5">
-                    {colors.map((color) => (
-                        <button
-                            key={color}
-                            onClick={() => handleColorSelect(color)}
-                            className={`w-8 h-8 rounded-full border-2 ${color} ${selectedColor === color ? "border-blue-500 scale-110" : "border-transparent"
-                                } transition-transform`}
-                        />
-                    ))}
-                    {selectedColor && (
-                        <button
-                            onClick={() => setSelectedColor(null)}
-                            className="ml-2 px-3 py-1 text-sm bg-gray-700 text-white rounded-lg shadow-md hover:bg-gray-600 transition"
-                        >
-                            Limpar Filtro
-                        </button>
-                    )}
-                </div>
+
+                <TaskSearchColor
+                    colors={colors}
+                    selectedColor={selectedColor}
+                    onSelectColor={setSelectedColor}
+                />
 
                 <TaskFavorites
                     tasks={favoriteTasks}
@@ -138,7 +125,6 @@ const TaskIndex = () => {
                     changeColor={changeColor}
                     colors={colors}
                 />
-
 
             </div>
             {editingTask && (
