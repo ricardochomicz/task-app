@@ -5,10 +5,15 @@ import { ITask } from "../interfaces/TaskInterface";
 const TaskService = {
 
     async create(data: ITask) {
-        await api.post<ITask>("/tasks", data);
+        try {
+            let res = await api.post("/tasks", data);
+            ToastService.success(res.data.message);
+        } catch (error: any) {
+            ToastService.error(error.response.data.error);
+        }
     },
 
-    async index(search: string, color: string = ""): Promise<ITask[]> {
+    async index(search: string, color: string): Promise<ITask[]> {
         try {
             const response = await api.get("/tasks", {
                 params: {
@@ -19,7 +24,6 @@ const TaskService = {
             return response.data.data;
         } catch (error) {
             throw { error: "Erro ao exibir tarefas" };
-            return [];
         }
     },
 
@@ -28,17 +32,18 @@ const TaskService = {
             const res = await api.put(`/tasks/${id}/favorite`, { favorite: isFavorite });
             ToastService.success(isFavorite ? "Tarefa marcada como favorita!" : "Tarefa desmarcada como favorita!");
             return res.data;
-        } catch (error) {
-            ToastService.error("Erro ao favoritar/desfavoritar.");
+        } catch (error: any) {
+            ToastService.error(error.response.data.error);
         }
     },
 
     async updateColor(id: number, newColor: string) {
         try {
             const res = await api.put(`/tasks/${id}/color`, { color: newColor });
+            ToastService.success(res.data.message);
             return res.data;
-        } catch (error) {
-            ToastService.error("Erro ao atualizar a cor.");
+        } catch (error: any) {
+            ToastService.error(error.response.data.error);
         }
     },
 
@@ -54,10 +59,10 @@ const TaskService = {
     async update(id: number, data: ITask) {
         try {
             const res = await api.put(`/tasks/${id}`, data);
-            ToastService.success("Tarefa atualizada com sucesso!");
+            ToastService.success(res.data.message);
             return res.data;
-        } catch (error) {
-            ToastService.error("Erro ao atualizar tarefa.");
+        } catch (error: any) {
+            ToastService.error(error.response.data.error);
         }
     },
 
