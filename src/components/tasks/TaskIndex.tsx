@@ -13,6 +13,7 @@ const TaskIndex = () => {
     const [tasks, setTasks] = useState<ITask[]>([]);
     const [editingTask, setEditingTask] = useState<ITask | null>(null);
     const [search, setSearch] = useState("");
+    const [selectedColor, setSelectedColor] = useState<any | null>(null); // Estado da cor(filtro)
 
     const favoriteTasks = tasks.filter((task) => task.favorite);
     const otherTasks = tasks.filter((task) => !task.favorite);
@@ -24,9 +25,9 @@ const TaskIndex = () => {
         });
     };
 
-    const fetchTasks = async (search = "") => {
+    const fetchTasks = async () => {
         try {
-            const response = await TaskService.index(search);
+            const response = await TaskService.index(search, selectedColor);
             setTasks(response);
         } catch (error) {
             console.error("Erro ao buscar tarefas:", error);
@@ -34,8 +35,8 @@ const TaskIndex = () => {
     };
 
     useEffect(() => {
-        fetchTasks(search);
-    }, [search]);
+        fetchTasks();
+    }, [search, selectedColor]);
 
     const saveEdit = async () => {
         if (!editingTask) return;
@@ -79,6 +80,14 @@ const TaskIndex = () => {
         fetchTasks();
     };
 
+    const handleColorSelect = (color: string) => {
+        setSelectedColor(color === selectedColor ? "" : color); // Toggle para limpar a seleção
+    };
+
+    const filteredTasks = selectedColor
+        ? tasks.filter((task) => task.color === selectedColor)
+        : tasks;
+
     return (
         <div>
 
@@ -86,6 +95,25 @@ const TaskIndex = () => {
                 <TaskCreate onTaskCreated={fetchTasks} />
 
                 <TaskSearch search={search} setSearch={setSearch} />
+                {/* Paleta de Cores */}
+                <div className="flex gap-2 justify-center items-center mt-5">
+                    {colors.map((color) => (
+                        <button
+                            key={color}
+                            onClick={() => handleColorSelect(color)}
+                            className={`w-8 h-8 rounded-full border-2 ${color} ${selectedColor === color ? "border-blue-500 scale-110" : "border-transparent"
+                                } transition-transform`}
+                        />
+                    ))}
+                    {selectedColor && (
+                        <button
+                            onClick={() => setSelectedColor(null)}
+                            className="ml-2 px-3 py-1 text-sm bg-gray-700 text-white rounded-lg shadow-md hover:bg-gray-600 transition"
+                        >
+                            Limpar Filtro
+                        </button>
+                    )}
+                </div>
 
                 <TaskFavorites
                     tasks={favoriteTasks}

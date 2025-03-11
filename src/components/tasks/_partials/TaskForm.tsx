@@ -23,7 +23,7 @@ function TaskForm({ handleSubmit, register, errors, favorite, setFavorite }: Tas
                             placeholder="Título"
                             {...register('title')}
                         />
-                        {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
+
                         <button type="button" onClick={() => setFavorite(!favorite)}>
                             <Star
                                 size={20}
@@ -31,8 +31,8 @@ function TaskForm({ handleSubmit, register, errors, favorite, setFavorite }: Tas
                                     } transition-colors`}
                             />
                         </button>
-
                     </div>
+                    {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
                     {/* Input de Descrição */}
                     <textarea
                         className="w-full mt-2 p-2 text-gray-600 bg-transparent border-none focus:ring-0 focus:outline-none resize-none"

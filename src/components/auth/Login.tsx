@@ -40,7 +40,7 @@ const Login: React.FC = () => {
             <section className="absolute inset-0 flex items-center justify-center">
                 <div className="w-full max-w-md bg-white bg-opacity-90 backdrop-blur-lg rounded-2xl shadow-2xl p-8">
                     <h1 className="text-2xl font-bold text-gray-900 text-center">
-                        Faça seu cadastro
+                        Faça seu login
                     </h1>
 
                     <form className="space-y-5 mt-6" onSubmit={handleSubmit(onSubmit)}>

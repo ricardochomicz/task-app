@@ -16,7 +16,6 @@ interface User {
 
 // Tipando o valor do contexto
 interface AuthContextType {
-    registro: (userData: User) => void;
     login: (userData: User) => void;
     logout: () => void;
     authenticated: boolean;
@@ -73,13 +72,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
     };
 
-    const registro = (userData: User) => {
-        if (userData.token) {
-            localStorage.setItem('token', userData.token);
-            setIsAuthenticated(true);
-            setUser(userData)
-        }
-    };
+    // const registro = (userData: User) => {
+    //     if (userData.token) {
+    //         localStorage.setItem('token', userData.token);
+    //         setIsAuthenticated(true);
+    //         setUser(userData)
+    //     }
+    // };
 
     const logout = () => {
         setIsAuthenticated(false);
@@ -97,7 +96,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     };
 
     return (
-        <AuthContext.Provider value={{ authenticated, setIsAuthenticated, registro, login, logout, refreshUser }}>
+        <AuthContext.Provider value={{ authenticated, setIsAuthenticated, login, logout, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );

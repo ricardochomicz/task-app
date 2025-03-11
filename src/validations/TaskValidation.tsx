@@ -1,7 +1,7 @@
 import * as z from 'zod';
 
 export const taskValidation = z.object({
-    title: z.string({ message: 'Informe o título da tarefa' }),
+    title: z.string().min(3, { message: 'Informe o título da tarefa' }),
 
-    description: z.string({ message: 'Informe a descrição para continuar' })
+    description: z.string().min(3, { message: 'Informe a descrição para continuar' })
 });

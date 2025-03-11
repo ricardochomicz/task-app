@@ -3,14 +3,17 @@ import { ToastService } from "../commons/ToastMessages";
 import { ITask } from "../interfaces/TaskInterface";
 
 const TaskService = {
-    create(data: ITask) {
-        return api.post<ITask>("/tasks", data);
+
+    async create(data: ITask) {
+        await api.post<ITask>("/tasks", data);
     },
-    async index(search: string = ""): Promise<ITask[]> {
+
+    async index(search: string = "", color: string = ""): Promise<ITask[]> {
         try {
             const response = await api.get("/tasks", {
                 params: {
-                    search: search
+                    search: search,
+                    color: color
                 }
             });
             return response.data.data;
