@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Star, Pencil, Trash, PaintBucket, Sparkles, NotebookPen } from "lucide-react";
+import { useEffect, useState } from "react";
 import TaskCreate from "./TaskCreate";
 import TaskService from "../../services/TaskService";
 import { ITask } from "../../interfaces/TaskInterface";

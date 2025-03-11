@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { render, screen } from '@testing-library/react';
 import TaskFavorites from '../components/tasks/TaskFavorites';
 import '@testing-library/jest-dom';

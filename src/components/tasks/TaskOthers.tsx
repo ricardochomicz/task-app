@@ -1,5 +1,5 @@
 import React from "react";
-import { Star, Pencil, Trash, PaintBucket, Sparkles, NotebookPen } from "lucide-react";
+import { Star, Pencil, Trash, PaintBucket, NotebookPen } from "lucide-react";
 import { ITask } from "../../interfaces/TaskInterface";
 
 interface TaskOthersProps {
