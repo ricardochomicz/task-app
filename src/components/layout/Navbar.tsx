@@ -15,11 +15,7 @@ const NavBar = () => {
     const { authenticated, logout } = useAuth();
 
     useEffect(() => {
-        if (authenticated) {
-            setUser(AuthService.getUserFromToken());
-        } else {
-            setUser(null);
-        }
+        setUser(AuthService.getUserFromToken());
     }, [authenticated]);
 
     const handleLogout = () => {
