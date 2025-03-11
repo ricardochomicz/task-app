@@ -27,8 +27,8 @@ function TaskCreate({ onTaskCreated }: TaskCreateProps) {
             onTaskCreated();
             reset();
             ToastService.success("Tarefa criada com sucesso!");
-        } catch (error) {
-
+        } catch (error: any) {
+            ToastService.error(error.response.data.error);
         }
     }
 
