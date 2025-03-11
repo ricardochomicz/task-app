@@ -1,46 +1,162 @@
-# Getting Started with Create React App
+# Task App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
- 
-## Available Scripts
+## Descrição
 
-In the project directory, you can run:
+O Task App é uma aplicação web para gerenciamento de tarefas, onde os usuários podem criar, editar, excluir e marcar tarefas como favoritas. A aplicação também permite a busca e filtragem de tarefas por cor.
 
-### `yarn start`
+## Instalação
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+1. Clone o repositório:
+    ```sh
+    git clone https://github.com/seu-usuario/task-app.git
+    cd task-app
+    ```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+2. Instale as dependências:
+    ```sh
+    npm install
+    ```
 
-### `yarn test`
+## Scripts Disponíveis
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+No diretório do projeto, você pode executar:
 
-### `yarn build`
+### `npm start`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Roda a aplicação em modo de desenvolvimento.\
+Abra [http://localhost:3000](http://localhost:3000) para visualizá-la no navegador.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### `npm test`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Inicia o executor de testes no modo interativo.\
+Veja a seção sobre [testes em execução](https://facebook.github.io/create-react-app/docs/running-tests) para mais informações.
 
-### `yarn eject`
+### `npm run build`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Compila a aplicação para produção na pasta `build`.\
+Ele agrupa corretamente o React no modo de produção e otimiza a construção para o melhor desempenho.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### `npm run eject`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+**Nota: esta é uma operação unilateral. Uma vez que você `eject`, você não pode voltar!**
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Se você não estiver satisfeito com a ferramenta de construção e as escolhas de configuração, você pode `eject` a qualquer momento. Este comando removerá a dependência única de construção do seu projeto.
 
-## Learn More
+## Configuração do Docker
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Para construir e rodar a aplicação usando Docker, você pode usar o `Dockerfile` fornecido:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. Construa a imagem Docker:
+    ```sh
+    docker build -t task-app .
+    ```
+
+2. Rode o contêiner Docker:
+    ```sh
+    docker run -p 80:80 task-app
+    ```
+
+## Configuração de CI/CD
+
+O projeto está configurado para usar GitHub Actions para CI/CD. O arquivo de configuração está localizado em `.github/workflows/ci-cd.yml`.
+
+## Estrutura do Projeto
+
+A estrutura do projeto é a seguinte:
+
+## Estrutura de Diretórios
+
+- **src/**: Contém o código-fonte da aplicação.
+  - **components/**: Componentes React.
+  - **context/**: Contextos React para gerenciamento de estado.
+  - **helpers/**: Funções auxiliares.
+  - **interfaces/**: Definições de interfaces TypeScript.
+  - **routes/**: Configuração de rotas da aplicação.
+  - **tests/**: Testes unitários e de integração.
+  - **validations/**: Validações de formulários usando Zod.
+- **public/**: Arquivos públicos estáticos.
+
+## Testes
+
+Os testes são escritos usando `@testing-library/react` e `jest`. Os arquivos de teste estão localizados no diretório `src/tests/`.
+
+Exemplo de teste para o componente `TaskCreate`:
+
+```tsx
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import TaskCreate from '../components/tasks/TaskCreate';
+import TaskService from '../services/TaskService';
+import { ToastService } from '../commons/ToastMessages';
+import '@testing-library/jest-dom';
+import 'react-toastify/dist/ReactToastify.css';
+import userEvent from "@testing-library/user-event";
+
+// Mock do TaskService e ToastService
+jest.mock("../services/TaskService", () => ({
+    create: jest.fn(),
+}));
+
+jest.mock("../commons/ToastMessages", () => ({
+    ToastService: {
+        success: jest.fn(),
+        error: jest.fn(),
+    },
+}));
+jest.mock('react-toastify/dist/ReactToastify.css', () => { });
+
+const mockOnTaskCreated = jest.fn();
+
+describe("TaskCreate Component", () => {
+    it("deve renderizar o formulário corretamente", () => {
+        render(<TaskCreate onTaskCreated={jest.fn()} />);
+
+        expect(screen.getByPlaceholderText("Título")).toBeInTheDocument();
+        expect(screen.getByPlaceholderText("Descrição da nota...")).toBeInTheDocument();
+        expect(screen.getByText("Criar")).toBeInTheDocument();
+    });
+
+    it("deve permitir que o usuário insira título e descrição", async () => {
+        render(<TaskCreate onTaskCreated={jest.fn()} />);
+
+        const titleInput = screen.getByPlaceholderText("Título");
+        const descriptionInput = screen.getByPlaceholderText("Descrição da nota...");
+
+        await userEvent.type(titleInput, "Nova tarefa");
+        await userEvent.type(descriptionInput, "Descrição da nova tarefa");
+
+        expect(titleInput).toHaveValue("Nova tarefa");
+        expect(descriptionInput).toHaveValue("Descrição da nova tarefa");
+    });
+
+    it("deve chamar TaskService.create no envio do formulário", async () => {
+        (TaskService.create as jest.Mock).mockResolvedValue({});
+        const onTaskCreatedMock = jest.fn();
+
+        render(<TaskCreate onTaskCreated={onTaskCreatedMock} />);
+
+        const titleInput = screen.getByPlaceholderText("Título");
+        const descriptionInput = screen.getByPlaceholderText("Descrição da nota...");
+        const submitButton = screen.getByText("Criar");
+
+        await userEvent.type(titleInput, "Teste");
+        await userEvent.type(descriptionInput, "Teste descrição");
+        fireEvent.click(submitButton);
+
+        await waitFor(() => {
+            expect(TaskService.create).toHaveBeenCalledWith({ title: "Teste", description: "Teste descrição", favorite: false });
+            expect(onTaskCreatedMock).toHaveBeenCalled();
+            expect(ToastService.success).toHaveBeenCalledWith("Tarefa criada com sucesso!");
+        });
+    });
+
+    it("deve alternar o estado favorito", async () => {
+        render(<TaskCreate onTaskCreated={jest.fn()} />);
+
+        const favoriteButton = screen.getByTestId("favorite");
+        fireEvent.click(favoriteButton);
+
+        await waitFor(() => {
+            expect(favoriteButton.querySelector("svg")).toHaveClass("text-yellow-500");
+        });
+    });
+});
