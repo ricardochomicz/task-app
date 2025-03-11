@@ -44,7 +44,9 @@ const Profile: React.FC<ProfileProps> = ({ user, isOpen, onClose }) => {
             let res = await UserService.update(formData, user.id);
             ToastService.success(res.data.message);
             onClose();
+            console.log('Perfil atualizado com sucesso!')
         } catch (error: any) {
+            console.log('Erro ao atualizar perfil');
             ToastService.error(error.response.data.error);
         }
     };
@@ -63,7 +65,7 @@ const Profile: React.FC<ProfileProps> = ({ user, isOpen, onClose }) => {
                                 </h5>
                             </div>
                             <button
-                                onClick={onClose}
+                                onClick={onClose} data-testid="close"
                                 className="text-gray-400 hover:bg-gray-200 rounded-lg text-sm w-8 h-8 flex items-center justify-center dark:hover:bg-gray-600"
                             >
                                 <svg className="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
