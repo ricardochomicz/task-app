@@ -65,8 +65,9 @@ A estrutura do projeto é a seguinte:
   - **validations/**: Validações de formulários usando Zod.
 - **public/**: Arquivos públicos estáticos.
 
-## Vídeo
-<video controls src="Recording (1).mp4" title="Title"></video>
+## Vídeo Demonstrativo
+[Assistir](https://youtu.be/4P6oRjyOpao)
+
 
 ## Testes
 
