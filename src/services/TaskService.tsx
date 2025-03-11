@@ -8,12 +8,12 @@ const TaskService = {
         await api.post<ITask>("/tasks", data);
     },
 
-    async index(search: string = "", color: string = ""): Promise<ITask[]> {
+    async index(search: string, color: string = ""): Promise<ITask[]> {
         try {
             const response = await api.get("/tasks", {
                 params: {
-                    search: search,
-                    color: color
+                    search,
+                    color
                 }
             });
             return response.data.data;
