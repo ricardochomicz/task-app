@@ -19,14 +19,16 @@ function TaskForm({ handleSubmit, register, errors, favorite, setFavorite }: Tas
                     <div className="flex justify-between items-center border-b pb-2">
                         <input
                             type="text"
+                            id="title"
                             className="w-full text-lg font-semibold focus:outline-none bg-transparent"
                             placeholder="Título"
                             {...register('title')}
                         />
 
-                        <button type="button" onClick={() => setFavorite(!favorite)}>
+                        <button type="button" onClick={() => setFavorite(!favorite)} data-testid="favorite">
                             <Star
                                 size={20}
+
                                 className={`${favorite ? "text-yellow-500 fill-yellow-500" : "text-gray-400"
                                     } transition-colors`}
                             />

@@ -50,14 +50,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
     };
 
     useEffect(() => {
-        const storedToken = localStorage.getItem('token');
-        if (storedToken && !isTokenExpired(storedToken)) {
-            setIsAuthenticated(true);
-            refreshUser();
-        } else {
-            handleSessionExpired();
+        const storedToken = localStorage.getItem("token");
+        if (storedToken) {
+            if (isTokenExpired(storedToken)) {
+                handleSessionExpired(); // Chama o logout se o token estiver expirado
+            } else {
+                setIsAuthenticated(true);
+                refreshUser();
+            }
         }
-    }, [authenticated]);
+    }, []);
 
     const handleSessionExpired = () => {
         logout();

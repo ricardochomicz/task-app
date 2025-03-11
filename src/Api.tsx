@@ -28,8 +28,8 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-            const { logout } = useAuth();
-            logout(); // Token inválido? Faz logout e redireciona
+            AuthService.logout();
+            window.location.href = "/login"; // Token inválido? Faz logout e redireciona
         }
         return Promise.reject(error);
     }
