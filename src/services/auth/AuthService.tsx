@@ -27,7 +27,7 @@ interface AuthResponse {
 
 export const AuthService = {
 
-    async register(data: UserData): Promise<AuthResponse> {
+    async register(data: UserData, setAuthenticated: (value: boolean) => void): Promise<AuthResponse> {
         try {
             const response = await api.post("/register", data);
             console.log(response)
@@ -35,6 +35,7 @@ export const AuthService = {
 
             if (token) {
                 this.setToken(token);
+                setAuthenticated(true);
             }
 
             return response.data;

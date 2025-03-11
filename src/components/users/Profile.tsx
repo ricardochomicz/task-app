@@ -105,6 +105,7 @@ const Profile: React.FC<ProfileProps> = ({ user, isOpen, onClose }) => {
                                 Editar Perfil
                             </button>
                         </form>
+                        <small className="text-white">As alterações serão refletidas quando fizer o login novamente</small>
                     </div>
                 </div>
             )}

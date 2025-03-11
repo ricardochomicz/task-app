@@ -4,6 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { registerValidation } from '../../validations/auth/RegisterValidation';
 import { AuthService } from '../../services/auth/AuthService';
+import { useAuth } from '../../context/AuthContext';
 
 interface IRegisterForm {
     name: string;
@@ -12,7 +13,7 @@ interface IRegisterForm {
 }
 
 const Register: React.FC = () => {
-
+    const { setIsAuthenticated } = useAuth();
     const [loading, setLoading] = React.useState(false);
     const navigate = useNavigate();
 
@@ -29,7 +30,7 @@ const Register: React.FC = () => {
                 name: data.name,
                 email: data.email,
                 password: data.password,
-            });
+            }, setIsAuthenticated);
             navigate('/app/tasks');
         } catch (error: any) {
             console.log(error)

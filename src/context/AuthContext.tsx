@@ -1,9 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import api from '../Api';
 import { useNavigate } from 'react-router-dom';
-import { AuthService } from '../services/auth/AuthService';
-
 
 // Definindo o tipo do usuário
 interface User {
@@ -16,11 +13,8 @@ interface User {
 
 // Tipando o valor do contexto
 interface AuthContextType {
-    login: (userData: User) => void;
-    logout: () => void;
     authenticated: boolean;
     setIsAuthenticated: (value: boolean) => void;
-    refreshUser: () => void;
 }
 
 interface DecodedToken {
@@ -35,7 +29,6 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-
     const [user, setUser] = useState<User | null>(null);
     const navigate = useNavigate();
     const [authenticated, setIsAuthenticated] = useState<boolean>(true)
@@ -56,31 +49,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 handleSessionExpired(); // Chama o logout se o token estiver expirado
             } else {
                 setIsAuthenticated(true);
-                refreshUser();
             }
         }
     }, []);
-
-    const handleSessionExpired = () => {
-        logout();
-        navigate('/login'); // 👈 Redireciona para login
-    };
-
-    const login = async (userData: any) => {
-        try {
-            await AuthService.login(userData, setIsAuthenticated);  // Passando a função setIsAuthenticated para o AuthService
-        } catch (error) {
-            throw { error: "Erro ao fazer login" };
-        }
-    };
-
-    // const registro = (userData: User) => {
-    //     if (userData.token) {
-    //         localStorage.setItem('token', userData.token);
-    //         setIsAuthenticated(true);
-    //         setUser(userData)
-    //     }
-    // };
 
     const logout = () => {
         setIsAuthenticated(false);
@@ -88,17 +59,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
         navigate('/login');
     };
 
-    const refreshUser = async () => {
-        try {
-            const response = await api.get("/me");
-            setUser(response.data);
-        } catch (error) {
-            throw { error: "Erro ao buscar usuário" };
-        }
+    const handleSessionExpired = () => {
+        logout();
+        navigate('/login'); // 👈 Redireciona para login
     };
 
     return (
-        <AuthContext.Provider value={{ authenticated, setIsAuthenticated, login, logout, refreshUser }}>
+        <AuthContext.Provider value={{ authenticated, setIsAuthenticated }}>
             {children}
         </AuthContext.Provider>
     );
