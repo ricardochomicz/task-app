@@ -1,6 +1,5 @@
-import axios, { AxiosRequestConfig, InternalAxiosRequestConfig, AxiosError } from 'axios';
+import axios, { InternalAxiosRequestConfig, AxiosError } from 'axios';
 import { AuthService } from './services/auth/AuthService';
-import { useAuth } from './context/AuthContext';
 
 // Criação da instância do axios
 const api = axios.create({
