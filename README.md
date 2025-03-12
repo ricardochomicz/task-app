@@ -1,6 +1,8 @@
+# Guia do Projeto
+[PULL_REQUEST](https://github.com/ricardochomicz/task-api/blob/main/PULL_REQUEST.md)
+
 # Task App
 
- 
 ## Descrição
 
 O Task App é uma aplicação web para gerenciamento de tarefas, onde os usuários podem criar, editar, excluir e marcar tarefas como favoritas. A aplicação também permite a busca e filtragem de tarefas por cor.
