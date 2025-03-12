@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { registerValidation } from '../../validations/auth/RegisterValidation';
 import { AuthService } from '../../services/auth/AuthService';
 import { useAuth } from '../../context/AuthContext';
+import { ToastService } from '../../commons/ToastMessages';
 
 interface IRegisterForm {
     name: string;
@@ -14,7 +15,6 @@ interface IRegisterForm {
 
 const Register: React.FC = () => {
     const { setIsAuthenticated } = useAuth();
-    const [loading, setLoading] = React.useState(false);
     const navigate = useNavigate();
 
     const {
@@ -24,23 +24,19 @@ const Register: React.FC = () => {
     } = useForm<IRegisterForm>({ resolver: zodResolver(registerValidation) });
 
     const onSubmit: SubmitHandler<IRegisterForm> = async (data) => {
-        setLoading(true);
         try {
-            const res = await AuthService.register({
+            await AuthService.register({
                 name: data.name,
                 email: data.email,
                 password: data.password,
             }, setIsAuthenticated);
             navigate('/app/tasks');
         } catch (error: any) {
-            console.log(error)
-        } finally {
-            setLoading(false);
+            ToastService.error(error.error);
         }
     }
 
     return (
-
         <div className="relative w-full h-screen">
             <img src="notas.png" alt="Background" className="absolute inset-0 w-full h-full object-cover" />
             <section className="absolute inset-0 flex items-center justify-center">

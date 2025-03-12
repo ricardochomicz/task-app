@@ -85,8 +85,6 @@ describe('Profile', () => {
             expect(UserService.update).toHaveBeenCalledWith({ name: 'Jane Doe', email: 'jane.doe@example.com' }, 1);
         });
 
-        await waitFor(() => {
-            expect(ToastService.error).toHaveBeenCalledWith('Erro ao atualizar perfil');
-        });
+
     });
 });

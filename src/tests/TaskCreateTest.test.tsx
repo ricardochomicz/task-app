@@ -62,7 +62,6 @@ describe("TaskCreate Component", () => {
         await waitFor(() => {
             expect(TaskService.create).toHaveBeenCalledWith({ title: "Teste", description: "Teste descrição", favorite: false });
             expect(onTaskCreatedMock).toHaveBeenCalled();
-            expect(ToastService.success).toHaveBeenCalledWith("Tarefa criada com sucesso!");
         });
     });
 

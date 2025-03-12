@@ -62,7 +62,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const handleSessionExpired = () => {
         logout();
-        navigate('/login'); // 👈 Redireciona para login
+        navigate('/login'); //Redireciona para login
     };
 
     return (

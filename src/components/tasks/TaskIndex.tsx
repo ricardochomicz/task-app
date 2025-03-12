@@ -80,14 +80,6 @@ const TaskIndex = () => {
         fetchTasks();
     };
 
-    const handleColorSelect = (color: string) => {
-        setSelectedColor(color === selectedColor ? "" : color); // Toggle para limpar a seleção
-    };
-
-    const filteredTasks = selectedColor
-        ? tasks.filter((task) => task.color === selectedColor)
-        : tasks;
-
     return (
         <div>
             <div className="p-4">
